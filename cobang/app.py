@@ -39,6 +39,7 @@ from .messages import WifiInfoMessage, parse_wifi_message
 logger = Logger(__name__)
 Gst.init(None)
 CONTROL_MASK = Gdk.ModifierType.CONTROL_MASK
+RESOURCE_BASE = '/vn/hoabinh/quan/CoBang'
 
 # Some Gstreamer CLI examples
 # gst-launch-1.0 v4l2src device=/dev/video0 ! videoconvert ! waylandsink
@@ -678,11 +679,9 @@ class CoBangApplication(Gtk.Application):
     def show_about_dialog(self, action: Gio.SimpleAction, param: Optional[GLib.Variant] = None):
         if self.gst_pipeline:
             self.btn_pause.set_active(True)
-        source = get_ui_filepath('about.glade')
-        builder: Gtk.Builder = Gtk.Builder.new_from_file(str(source))
+        builder: Gtk.Builder = Gtk.Builder.new_from_resource(f'{RESOURCE_BASE}/about.ui')
         dlg_about: Gtk.AboutDialog = builder.get_object('dlg-about')
         dlg_about.set_version(__version__)
-        logger.debug('To present {}', dlg_about)
         dlg_about.present()
 
     def show_error(self, message: str):

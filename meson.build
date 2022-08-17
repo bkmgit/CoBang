@@ -1,6 +1,6 @@
 project('cobang',
         version: '0.9.6',
-        meson_version: '>= 0.53',
+        meson_version: '>= 0.56',
         default_options: [
           'warning_level=2',
         ],
@@ -22,7 +22,7 @@ dependency('gtk+-3.0', version: '>=3.24')
 gnome = import('gnome')
 
 conf = configuration_data()
-conf.set('PYTHON', python.path())
+conf.set('PYTHON', python.full_path())
 conf.set('VERSION', meson.project_version())
 conf.set('localedir', get_option('prefix') / get_option('localedir'))
 conf.set('pkgdatadir', pkgdatadir)
