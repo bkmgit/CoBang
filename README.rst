@@ -160,7 +160,9 @@ Run from source
 
 .. code-block:: sh
 
-    python3 -m cobang
+    meson _build
+    ninja -C _build
+    ninja -C _build run
 
 
 Add ``-v`` option to see more detailed log.

@@ -5,3 +5,8 @@ configure_file(
   install: true,
   install_dir: get_option('bindir')
 )
+
+myprogram = join_paths(meson.project_build_root(), 'bin', meson.project_name())
+run_target('run',
+  command: [myprogram]
+)
