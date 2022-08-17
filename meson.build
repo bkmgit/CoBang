@@ -19,18 +19,21 @@ dependency('gobject-2.0')
 dependency('gobject-introspection-1.0')
 dependency('gtk+-3.0', version: '>=3.24')
 
+gnome = import('gnome')
+
 conf = configuration_data()
 conf.set('PYTHON', python.path())
 conf.set('VERSION', meson.project_version())
 conf.set('localedir', get_option('prefix') / get_option('localedir'))
 conf.set('pkgdatadir', pkgdatadir)
+conf.set('appid', 'vn.hoabinh.quan.CoBang')
 
 install_subdir(
   meson.project_name(),
   install_dir: python.get_install_dir()
 )
 subdir('data')
-subdir('exe')
+subdir('bin')
 subdir('po')
 
 configure_file(

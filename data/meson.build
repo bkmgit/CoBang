@@ -1,10 +1,17 @@
-
+app_id = conf.get('appid')
 
 install_data(['cobang-resp.glade', 'about.glade', 'url-display.glade', 'wifi-display.glade',
               'cobang_128.png', 'wireframe-image-add.svg'],
   install_dir: get_option('datadir') / meson.project_name()
 )
 
+app_resources = gnome.compile_resources(app_id,
+    app_id + '.gresource.xml',
+    gresource_bundle: true,
+    dependencies: [],
+    install: true,
+    install_dir: pkgdatadir
+)
 
 desktop_file = files('vn.hoabinh.quan.CoBang.desktop')
 

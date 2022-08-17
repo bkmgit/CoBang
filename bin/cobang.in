@@ -1,0 +1,23 @@
+#!@PYTHON@
+
+import os
+import sys
+
+
+pkgdatadir = '@pkgdatadir@'
+# Allow to run from source in development
+builddir = os.getenv('MESON_BUILD_ROOT')
+if builddir:
+    sys.path.insert(1, os.environ['MESON_SOURCE_ROOT'])
+    pkgdatadir = os.path.join(builddir, 'data')
+
+if __name__ == '__main__':
+    import gi
+
+    from gi.repository import Gio
+
+    resource = Gio.resource_load(os.path.join(pkgdatadir, '@appid@.gresource'))
+    resource._register()
+
+    from cobang.run import main
+    main()
