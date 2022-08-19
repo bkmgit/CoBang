@@ -1,4 +1,5 @@
 APP_ID = 'vn.hoabinh.quan.CoBang'
+RESOURCE_BASE = '/vn/hoabinh/quan/CoBang'
 BRAND_NAME = APP_ID.split('.')[-1]
 SHORT_NAME = __name__.split('.')[0]
 

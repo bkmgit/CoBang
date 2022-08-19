@@ -28,10 +28,10 @@ gi.require_version('NM', '1.0')
 
 from gi.repository import GObject, GLib, Gtk, Gdk, Gio, GdkPixbuf, Handy, Rsvg, Gst, GstApp, NM
 
-from .consts import APP_ID, SHORT_NAME
+from .consts import APP_ID, SHORT_NAME, RESOURCE_BASE
 from . import __version__
 from . import ui
-from .resources import get_ui_filepath, guess_content_type, cache_http_file
+from .resources import guess_content_type, cache_http_file
 from .prep import get_device_path, choose_first_image, export_svg, scale_pixbuf
 from .messages import WifiInfoMessage, parse_wifi_message
 
@@ -39,7 +39,6 @@ from .messages import WifiInfoMessage, parse_wifi_message
 logger = Logger(__name__)
 Gst.init(None)
 CONTROL_MASK = Gdk.ModifierType.CONTROL_MASK
-RESOURCE_BASE = '/vn/hoabinh/quan/CoBang'
 
 # Some Gstreamer CLI examples
 # gst-launch-1.0 v4l2src device=/dev/video0 ! videoconvert ! waylandsink
@@ -148,8 +147,7 @@ class CoBangApplication(Gtk.Application):
         return pipeline
 
     def build_main_window(self):
-        source = get_ui_filepath('cobang-resp.glade')
-        builder: Gtk.Builder = Gtk.Builder.new_from_file(str(source))
+        builder: Gtk.Builder = Gtk.Builder.new_from_resource(f'{RESOURCE_BASE}/cobang.ui')
         handlers = self.signal_handlers_for_glade()
         window: Gtk.Window = builder.get_object('main-window')
         builder.get_object('main-grid')

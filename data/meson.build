@@ -1,7 +1,6 @@
 app_id = conf.get('appid')
 
-install_data(['cobang-resp.glade', 'url-display.glade', 'wifi-display.glade',
-              'wireframe-image-add.svg'],
+install_data(['wireframe-image-add.svg'],
   install_dir: get_option('datadir') / meson.project_name()
 )
 
@@ -10,7 +9,7 @@ app_resources = gnome.compile_resources(app_id,
     gresource_bundle: true,
     dependencies: [
       configure_file(
-        input: 'ui/about.ui.in',
+        input: 'about.ui.in',
         output: 'about.ui',
         configuration: conf,
       ),

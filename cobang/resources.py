@@ -58,16 +58,6 @@ def get_locale_folder() -> Path:
     return prefix / 'po'
 
 
-def get_ui_filepath(filename: str) -> Path:
-    ui_folder = get_ui_folder()
-    return ui_folder / filename
-
-
-def get_ui_source(filename: str) -> str:
-    filepath = get_ui_filepath(filename)
-    return filepath.read_text()
-
-
 def is_local_real_image(path: str) -> bool:
     try:
         Image.open(path)

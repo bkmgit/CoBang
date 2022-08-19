@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.22.2 -->
 <interface>
-  <requires lib="gtk+" version="3.20"/>
   <object class="GtkBox" id="box">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -29,7 +27,7 @@
         <property name="receives_default">True</property>
         <property name="halign">center</property>
         <property name="relief">none</property>
-        <property name="uri">http://glade.gnome.org</property>
+        <property name="uri">https://quan.hoabinh.vn</property>
       </object>
       <packing>
         <property name="expand">False</property>

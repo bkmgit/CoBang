@@ -3,6 +3,9 @@
   <gresource prefix="/vn/hoabinh/quan/CoBang">
 
     <file preprocess="xml-stripblanks">about.ui</file>
+    <file preprocess="xml-stripblanks">cobang.ui</file>
+    <file preprocess="xml-stripblanks">url-display.ui</file>
+    <file preprocess="xml-stripblanks">wifi-display.ui</file>
     <file preprocess="xml-stripblanks">vn.hoabinh.quan.CoBang.svg</file>
     <file preprocess="xml-stripblanks">wireframe-image-add.svg</file>
     <file>cobang_128.png</file>

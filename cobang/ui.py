@@ -12,8 +12,8 @@ gi.require_version('Gio', '2.0')
 
 from gi.repository import Gtk, Gdk, NM, Gio
 
+from .consts import RESOURCE_BASE
 from .common import _
-from .resources import get_ui_filepath
 from .messages import WifiInfoMessage
 from .net import is_connected_same_wifi, add_wifi_connection
 
@@ -46,8 +46,7 @@ def update_progress(bar: Gtk.ProgressBar, jump: Optional[float] = None):
 
 
 def build_wifi_info_display(wifi: WifiInfoMessage, nm_client: Optional[NM.Client]) -> Gtk.Box:
-    filepath = str(get_ui_filepath('wifi-display.glade'))
-    builder = Gtk.Builder.new_from_file(filepath)
+    builder = Gtk.Builder.new_from_resource(f'{RESOURCE_BASE}/wifi-display.ui')
     box = builder.get_object('wifi-form')
     builder.get_object('ssid-value').set_text(wifi.ssid)
     if wifi.password:
@@ -73,8 +72,7 @@ def on_btn_connect_clicked(btn: Gtk.Button, wifi: WifiInfoMessage, nm_client: Op
 
 
 def build_url_display(url: UrlSplitResult):
-    filepath = str(get_ui_filepath('url-display.glade'))
-    builder = Gtk.Builder.new_from_file(filepath)
+    builder = Gtk.Builder.new_from_resource(f'{RESOURCE_BASE}/url-display.ui')
     box = builder.get_object('box')
     btn: Gtk.LinkButton = builder.get_object('btn-link')
     btn.set_label(url.netloc)
