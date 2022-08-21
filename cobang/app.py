@@ -15,18 +15,18 @@ from PIL import Image
 
 gi.require_version('GObject', '2.0')
 gi.require_version('GLib', '2.0')
-gi.require_version('Gtk', '3.0')
-gi.require_version('Gdk', '3.0')
+gi.require_version('Gtk', '4.0')
+gi.require_version('Gdk', '4.0')
 gi.require_version('Gio', '2.0')
 gi.require_version('GdkPixbuf', '2.0')
-gi.require_version('Handy', '1')
+gi.require_version('Adw', '1')
 gi.require_version('Rsvg', '2.0')
 gi.require_version('Gst', '1.0')
 gi.require_version('GstBase', '1.0')
 gi.require_version('GstApp', '1.0')
 gi.require_version('NM', '1.0')
 
-from gi.repository import GObject, GLib, Gtk, Gdk, Gio, GdkPixbuf, Handy, Rsvg, Gst, GstApp, NM
+from gi.repository import GObject, GLib, Gtk, Gdk, Gio, GdkPixbuf, Adw, Rsvg, Gst, GstApp, NM
 
 from .consts import APP_ID, SHORT_NAME, RESOURCE_BASE
 from . import __version__
@@ -60,11 +60,11 @@ class CoBangApplication(Gtk.Application):
     area_webcam: Optional[Gtk.Widget] = None
     cont_webcam: Optional[Gtk.Overlay] = None
     stack_img_source: Optional[Gtk.Stack] = None
-    btn_play: Optional[Gtk.RadioToolButton] = None
+    btn_play: Optional[Gtk.ToggleButton] = None
     # We connect Play button with "toggled" signal, but when we want to imitate mouse click on the button,
     # calling "set_active" on it doesn't work! We have to call on the Pause button instead
-    btn_pause: Optional[Gtk.RadioToolButton] = None
-    btn_img_chooser: Optional[Gtk.FileChooserButton] = None
+    btn_pause: Optional[Gtk.ToggleButton] = None
+    btn_img_chooser: Optional[Gtk.Button] = None
     gst_pipeline: Optional[Gst.Pipeline] = None
     zbar_scanner: Optional[zbar.ImageScanner] = None
     raw_result_buffer: Optional[Gtk.TextBuffer] = None
@@ -74,7 +74,7 @@ class CoBangApplication(Gtk.Application):
     # Box holds the emplement to display when no image is chosen
     box_image_empty: Optional[Gtk.Box] = None
     devmonitor: Optional[Gst.DeviceMonitor] = None
-    clipboard: Optional[Gtk.Clipboard] = None
+    clipboard: Optional[Gdk.Clipboard] = None
     result_display: Optional[Gtk.Frame] = None
     progress_bar: Optional[Gtk.ProgressBar] = None
     infobar: Optional[Gtk.InfoBar] = None
@@ -92,7 +92,7 @@ class CoBangApplication(Gtk.Application):
         )
 
     def do_startup(self):
-        Handy.init()
+        Adw.init()
         Gtk.Application.do_startup(self)
         self.setup_actions()
         self.build_gstreamer_pipeline()
@@ -166,19 +166,16 @@ class CoBangApplication(Gtk.Application):
         self.box_image_empty = builder.get_object('box-image-empty')
         main_menubutton: Gtk.MenuButton = builder.get_object('main-menubutton')
         main_menubutton.set_menu_model(ui.build_app_menu_model())
-        self.frame_image.drag_dest_set(Gtk.DestDefaults.ALL, [], Gdk.DragAction.COPY)
-        self.frame_image.drag_dest_add_uri_targets()
-        self.clipboard = Gtk.Clipboard.get_for_display(Gdk.Display.get_default(),
-                                                       Gdk.SELECTION_CLIPBOARD)
+        # self.frame_image.drag_dest_set(Gtk.DestDefaults.ALL, [], Gdk.DragAction.COPY)
+        # self.frame_image.drag_dest_add_uri_targets()
+        self.clipboard = Gdk.Display.get_default().get_clipboard()
         self.result_display = builder.get_object('result-display-frame')
         self.progress_bar = builder.get_object('progress-bar')
         self.infobar = builder.get_object('info-bar')
-        box_playpause = builder.get_object('evbox-playpause')
-        self.cont_webcam.add_overlay(box_playpause)
-        builder.get_object('cont-raw-text').add_overlay(builder.get_object('evbox-copy'))
+        # self.cont_webcam.add_overlay(box_playpause)
+        # builder.get_object('cont-raw-text').add_overlay(builder.get_object('evbox-copy'))
         logger.debug('Connect signal handlers')
-        builder.connect_signals(handlers)
-        self.frame_image.connect('drag-data-received', self.on_frame_image_drag_data_received)
+        # self.frame_image.connect('drag-data-received', self.on_frame_image_drag_data_received)
         return window
 
     def signal_handlers_for_glade(self):
@@ -188,9 +185,9 @@ class CoBangApplication(Gtk.Application):
             'on_stack_img_source_visible_child_notify': self.on_stack_img_source_visible_child_notify,
             'on_btn_img_chooser_update_preview': self.on_btn_img_chooser_update_preview,
             'on_btn_img_chooser_file_set': self.on_btn_img_chooser_file_set,
-            'on_eventbox_key_press_event': self.on_eventbox_key_press_event,
-            'on_evbox_playpause_enter_notify_event': self.on_evbox_playpause_enter_notify_event,
-            'on_evbox_playpause_leave_notify_event': self.on_evbox_playpause_leave_notify_event,
+            # 'on_eventbox_key_press_event': self.on_eventbox_key_press_event,
+            # 'on_evbox_playpause_enter_notify_event': self.on_evbox_playpause_enter_notify_event,
+            # 'on_evbox_playpause_leave_notify_event': self.on_evbox_playpause_leave_notify_event,
             'on_info_bar_response': self.on_info_bar_response,
             'on_btn_copy_clicked': self.on_btn_copy_clicked,
         }
@@ -219,7 +216,7 @@ class CoBangApplication(Gtk.Application):
             self.discover_webcam()
         self.window.present()
         logger.debug("Window {} is shown", self.window)
-        ui.resize_to_match_screen(self.window)
+        # ui.resize_to_match_screen(self.window)
         # If no webcam is selected, select the first V4l2 one
         if not self.webcam_combobox.get_active_iter():
             v4l2_idx = next((n for n, r in enumerate(self.webcam_store) if r[2] == 'v4l2src'), 0)
@@ -433,7 +430,7 @@ class CoBangApplication(Gtk.Application):
             self.reset_image_placeholder()
             toolbar.show()
 
-    def on_btn_img_chooser_update_preview(self, chooser: Gtk.FileChooserButton):
+    def on_btn_img_chooser_update_preview(self, chooser: Gtk.Button):
         file_uri: Optional[str] = chooser.get_preview_uri()
         logger.debug('Chose file: {}', file_uri)
         if not file_uri:
@@ -519,7 +516,7 @@ class CoBangApplication(Gtk.Application):
             return
         self.display_result(img.symbols)
 
-    def on_btn_img_chooser_file_set(self, chooser: Gtk.FileChooserButton):
+    def on_btn_img_chooser_file_set(self, chooser: Gtk.Button):
         uri: str = chooser.get_uri()
         logger.debug('Chose file: {}', uri)
         # There is a limitation of Gio when handling HTTP remote files,
@@ -545,19 +542,19 @@ class CoBangApplication(Gtk.Application):
         self.process_passed_image_file(chosen_file, content_type)
         self.grab_focus_on_event_box()
 
-    def on_frame_image_drag_data_received(self, widget: Gtk.AspectFrame, drag_context: Gdk.DragContext,
-                                          x: int, y: int, data: Gtk.SelectionData, info: int, time: int):
-        uri: str = data.get_data().strip().decode()
-        logger.debug('Dropped URI: {}', uri)
-        if not uri:
-            logger.debug('Something wrong with desktop environment. No URI is given.')
-            return
-        chosen_file = Gio.file_new_for_uri(uri)
-        self.btn_img_chooser.select_uri(uri)
-        content_type = guess_content_type(chosen_file)
-        logger.debug('Content type: {}', content_type)
-        self.process_passed_image_file(chosen_file, content_type)
-        self.grab_focus_on_event_box()
+    # def on_frame_image_drag_data_received(self, widget: Gtk.AspectFrame, drag_context: Gdk.DragContext,
+    #                                       x: int, y: int, data: Gtk.SelectionData, info: int, time: int):
+    #     uri: str = data.get_data().strip().decode()
+    #     logger.debug('Dropped URI: {}', uri)
+    #     if not uri:
+    #         logger.debug('Something wrong with desktop environment. No URI is given.')
+    #         return
+    #     chosen_file = Gio.file_new_for_uri(uri)
+    #     self.btn_img_chooser.select_uri(uri)
+    #     content_type = guess_content_type(chosen_file)
+    #     logger.debug('Content type: {}', content_type)
+    #     self.process_passed_image_file(chosen_file, content_type)
+    #     self.grab_focus_on_event_box()
 
     def on_eventbox_key_press_event(self, widget: Gtk.Widget, event: Gdk.Event):
         logger.debug('Got key press: {}, state {}', event, event.state)
@@ -627,16 +624,16 @@ class CoBangApplication(Gtk.Application):
         self.display_result(img.symbols)
         return Gst.FlowReturn.OK
 
-    def on_evbox_playpause_enter_notify_event(self, box: Gtk.EventBox, event: Gdk.EventCrossing):
-        child: Gtk.Widget = box.get_child()
-        child.set_opacity(1)
+    # def on_evbox_playpause_enter_notify_event(self, box: Gtk.EventBox, event: Gdk.EventCrossing):
+    #     child: Gtk.Widget = box.get_child()
+    #     child.set_opacity(1)
 
-    def on_evbox_playpause_leave_notify_event(self, box: Gtk.EventBox, event: Gdk.EventCrossing):
-        child: Gtk.Widget = box.get_child()
-        child.set_opacity(0.2)
+    # def on_evbox_playpause_leave_notify_event(self, box: Gtk.EventBox, event: Gdk.EventCrossing):
+    #     child: Gtk.Widget = box.get_child()
+    #     child.set_opacity(0.2)
 
     def on_btn_copy_clicked(self, button: Gtk.Button):
-        clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
+        clipboard = Gdk.Display.get_default().get_clipboard()
         begin = self.raw_result_buffer.get_start_iter()
         end = self.raw_result_buffer.get_end_iter()
         self.raw_result_buffer.select_range(begin, end)

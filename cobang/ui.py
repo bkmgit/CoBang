@@ -5,8 +5,8 @@ from typing import Optional
 
 import gi
 from logbook import Logger
-gi.require_version('Gtk', '3.0')
-gi.require_version('Gdk', '3.0')
+gi.require_version('Gtk', '4.0')
+gi.require_version('Gdk', '4.0')
 gi.require_version('NM', '1.0')
 gi.require_version('Gio', '2.0')
 
@@ -62,7 +62,7 @@ def build_wifi_info_display(wifi: WifiInfoMessage, nm_client: Optional[NM.Client
     return box
 
 
-def on_secondary_icon_pressed(entry: Gtk.Entry, pos: Gtk.EntryIconPosition, event: Gdk.EventButton):
+def on_secondary_icon_pressed(entry: Gtk.Entry, pos: Gtk.EntryIconPosition):
     visible = entry.get_visibility()
     entry.set_visibility(not visible)
 
@@ -92,7 +92,7 @@ def get_monitor_screen(window: Gtk.Window):
     display = window.get_display()
     logger.debug('Display: {}, {}', display, display.get_name())
     # FIXME: It returns wrong monitor
-    monitor = display.get_monitor_at_window(window.get_window())
+    monitor = display.get_monitor_at_surface(window.get_surface())
     geo = monitor.get_geometry()
     w, h = geo.width, geo.height
     logger.debug('Monitor size: {}', (w, h))
@@ -105,9 +105,10 @@ def resize_to_match_screen(window: Gtk.Window):
     best_horizontal_width = BEST_HORIZONTAL_WIDTH / scale
     best_vertical_height = BEST_VERTICAL_HEIGHT / scale
     sw, sh = get_monitor_screen(window)
-    w, h = window.get_size()
+    w = window.get_size(Gtk.Orientation.HORIZONTAL)
+    h = window.get_size(Gtk.Orientation.VERTICAL)
     logger.debug('Current window size: {}', (w, h))
     if sw > best_horizontal_width:
-        window.resize(best_horizontal_width, h)
+        window.set_default_size(best_horizontal_width, h)
     elif sh > best_vertical_height:
-        window.resize(w, best_vertical_height)
+        window.set_default_size(w, best_vertical_height)

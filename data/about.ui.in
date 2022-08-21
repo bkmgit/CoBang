@@ -2,7 +2,6 @@
 <interface>
   <object class="GtkAboutDialog" id="dlg-about">
     <property name="can_focus">False</property>
-    <property name="type_hint">dialog</property>
     <property name="program_name">CoBang</property>
     <property name="copyright">© 2020 Nguyễn Hồng Quân</property>
     <property name="website">https://github.com/hongquan/CoBang</property>
