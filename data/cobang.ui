@@ -183,7 +183,7 @@
                                                 <property name="spacing">6</property>
                                                 <child>
                                                   <object class="GtkImage">
-                                                    <property name="file">wireframe-image-add.svg</property>
+                                                    <property name="resource">/vn/hoabinh/quan/CoBang/wireframe-image-add.svg</property>
                                                     <property name="pixel-size">128</property>
                                                   </object>
                                                 </child>
