@@ -146,12 +146,12 @@
                             <property name="halign">start</property>
                             <property name="orientation">vertical</property>
                             <child>
-                              <object class="GtkStack" id="stack-img-source">
+                              <object class="AdwViewStack" id="stack-img-source">
                                 <property name="valign">center</property>
                                 <property name="width-request">320</property>
                                 <property name="height-request">240</property>
                                 <child>
-                                  <object class="GtkStackPage">
+                                  <object class="AdwViewStackPage">
                                     <property name="name">src_webcam</property>
                                     <property name="title" translatable="1">Webcam</property>
                                     <property name="icon-name">camera-web</property>
@@ -166,7 +166,7 @@
                                   </object>
                                 </child>
                                 <child>
-                                  <object class="GtkStackPage">
+                                  <object class="AdwViewStackPage">
                                     <property name="name">src_image</property>
                                     <property name="title" translatable="1">Image</property>
                                     <property name="icon-name">insert-image</property>
